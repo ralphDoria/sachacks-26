@@ -1,11 +1,58 @@
+'use client'
+
 import Link from "next/link"
 import Image from "next/image"
 import { Star, Clock, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { getFeaturedRestaurants } from "@/lib/data"
+import { useEffect, useState } from "react"
+import { supabase } from "@/lib/supabase"
+
+interface Restaurant {
+  id: string
+  name: string
+  address: string
+  phone: string
+  created_at: string
+}
 
 export function FeaturedRestaurantsSection() {
-  const featured = getFeaturedRestaurants()
+  const [restaurants, setRestaurants] = useState<Restaurant[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchRestaurants() {
+      try {
+        const { data, error } = await supabase
+          .from('restaurants')
+          .select('*')
+          .limit(3)
+
+        if (error) {
+          console.error('Error fetching restaurants:', error)
+          setLoading(false)
+          return
+        }
+
+        setRestaurants(data || [])
+      } catch (err) {
+        console.error('Error:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchRestaurants()
+  }, [])
+
+  if (loading) {
+    return (
+      <section className="py-24 bg-muted/50">
+        <div className="mx-auto max-w-7xl px-4 lg:px-8">
+          <div className="text-center">Loading restaurants...</div>
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section className="py-24 bg-muted/50">
@@ -29,40 +76,29 @@ export function FeaturedRestaurantsSection() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {featured.map((restaurant) => (
+          {restaurants.map((restaurant) => (
             <Link
               key={restaurant.id}
-              href={`/restaurants/${restaurant.slug}`}
+              href={`/order/${restaurant.id}`}
               className="group bg-card rounded-xl overflow-hidden border border-border hover:border-primary/30 transition-all hover:shadow-lg"
             >
-              <div className="relative aspect-[16/10] overflow-hidden">
-                <Image
-                  src={restaurant.image}
-                  alt={restaurant.name}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
-                <div className="absolute top-3 right-3 bg-card/90 backdrop-blur-sm rounded-full px-3 py-1 flex items-center gap-1">
-                  <Star className="w-3.5 h-3.5 text-accent fill-accent" />
-                  <span className="text-xs font-semibold text-foreground">{restaurant.rating}</span>
-                </div>
+              <div className="relative aspect-[16/10] bg-muted flex items-center justify-center">
+                <div className="text-muted-foreground text-sm">Restaurant image</div>
               </div>
               <div className="p-5">
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <h3 className="font-serif text-lg font-semibold text-foreground group-hover:text-primary transition-colors">{restaurant.name}</h3>
-                    <p className="text-sm text-muted-foreground mt-0.5">{restaurant.cuisine}</p>
+                    <p className="text-sm text-muted-foreground mt-0.5">{restaurant.address}</p>
                   </div>
                 </div>
-                <p className="text-sm text-muted-foreground mt-2 line-clamp-2 leading-relaxed">{restaurant.description}</p>
                 <div className="flex items-center gap-4 mt-4 pt-4 border-t border-border">
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
                     <Clock className="w-3.5 h-3.5" />
-                    <span>{restaurant.deliveryTime}</span>
+                    <span>20-30 min</span>
                   </div>
                   <span className="text-xs text-primary font-medium">
-                    ${restaurant.deliveryFee.toFixed(2)} delivery
+                    $5.00 delivery
                   </span>
                 </div>
               </div>
