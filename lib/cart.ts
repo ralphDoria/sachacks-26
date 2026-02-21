@@ -12,7 +12,9 @@ interface CartState {
   items: CartItem[]
   restaurantId: string | null
   restaurantName: string | null
-  addItem: (item: MenuItem, restaurantId: string, restaurantName: string) => void
+  restaurantSlug: string | null
+  deliveryFee: number
+  addItem: (item: MenuItem, restaurantId: string, restaurantName: string, restaurantSlug: string, deliveryFee: number) => void
   removeItem: (itemId: string) => void
   updateQuantity: (itemId: string, quantity: number) => void
   clearCart: () => void
@@ -24,8 +26,10 @@ export const useCart = create<CartState>((set, get) => ({
   items: [],
   restaurantId: null,
   restaurantName: null,
+  restaurantSlug: null,
+  deliveryFee: 0,
 
-  addItem: (item, restaurantId, restaurantName) => {
+  addItem: (item, restaurantId, restaurantName, restaurantSlug, deliveryFee) => {
     const state = get()
 
     if (state.restaurantId && state.restaurantId !== restaurantId) {
@@ -33,6 +37,8 @@ export const useCart = create<CartState>((set, get) => ({
         items: [{ menuItem: item, quantity: 1, restaurantId, restaurantName }],
         restaurantId,
         restaurantName,
+        restaurantSlug,
+        deliveryFee,
       })
       return
     }
@@ -45,12 +51,16 @@ export const useCart = create<CartState>((set, get) => ({
         ),
         restaurantId,
         restaurantName,
+        restaurantSlug,
+        deliveryFee,
       })
     } else {
       set({
         items: [...state.items, { menuItem: item, quantity: 1, restaurantId, restaurantName }],
         restaurantId,
         restaurantName,
+        restaurantSlug,
+        deliveryFee,
       })
     }
   },
@@ -62,6 +72,8 @@ export const useCart = create<CartState>((set, get) => ({
       items: newItems,
       restaurantId: newItems.length > 0 ? state.restaurantId : null,
       restaurantName: newItems.length > 0 ? state.restaurantName : null,
+      restaurantSlug: newItems.length > 0 ? state.restaurantSlug : null,
+      deliveryFee: newItems.length > 0 ? state.deliveryFee : 0,
     })
   },
 
@@ -77,7 +89,7 @@ export const useCart = create<CartState>((set, get) => ({
     })
   },
 
-  clearCart: () => set({ items: [], restaurantId: null, restaurantName: null }),
+  clearCart: () => set({ items: [], restaurantId: null, restaurantName: null, restaurantSlug: null, deliveryFee: 0 }),
 
   getTotal: () =>
     get().items.reduce((total, item) => total + item.menuItem.price * item.quantity, 0),
