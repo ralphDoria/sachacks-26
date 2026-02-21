@@ -10,6 +10,7 @@ import { supabase } from "@/lib/supabase"
 interface Restaurant {
   id: string
   name: string
+  slug: string
   address: string
   phone: string
   created_at: string
@@ -79,7 +80,7 @@ export function FeaturedRestaurantsSection() {
           {restaurants.map((restaurant) => (
             <Link
               key={restaurant.id}
-              href={`/order/${restaurant.id}`}
+              href={`/restaurants/${restaurant.slug}`}
               className="group bg-card rounded-xl overflow-hidden border border-border hover:border-primary/30 transition-all hover:shadow-lg"
             >
               <div className="relative aspect-[16/10] bg-muted flex items-center justify-center">
