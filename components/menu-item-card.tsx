@@ -11,9 +11,11 @@ interface MenuItemCardProps {
   item: MenuItem
   restaurantId: string
   restaurantName: string
+  restaurantSlug: string
+  deliveryFee: number
 }
 
-export function MenuItemCard({ item, restaurantId, restaurantName }: MenuItemCardProps) {
+export function MenuItemCard({ item, restaurantId, restaurantName, restaurantSlug, deliveryFee }: MenuItemCardProps) {
   const addItem = useCart((s) => s.addItem)
   const currentRestaurantId = useCart((s) => s.restaurantId)
 
@@ -23,7 +25,7 @@ export function MenuItemCard({ item, restaurantId, restaurantName }: MenuItemCar
         description: `Your cart was updated to ${restaurantName}. We only support one restaurant per order.`,
       })
     }
-    addItem(item, restaurantId, restaurantName)
+    addItem(item, restaurantId, restaurantName, restaurantSlug, deliveryFee)
     toast.success(`${item.name} added to cart`)
   }
 

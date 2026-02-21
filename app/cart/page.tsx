@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Minus, Plus, Trash2, ArrowLeft, ShoppingBag, MapPin, CreditCard, CheckCircle } from "lucide-react"
+import { Minus, Plus, Trash2, ArrowLeft, ShoppingBag, MapPin, CreditCard, CheckCircle, Loader2 } from "lucide-react"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { Button } from "@/components/ui/button"
@@ -10,65 +10,55 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { useCart } from "@/lib/cart"
-import { restaurants } from "@/lib/data"
 import { toast } from "sonner"
 
 export default function CartPage() {
   const items = useCart((s) => s.items)
   const restaurantId = useCart((s) => s.restaurantId)
   const restaurantName = useCart((s) => s.restaurantName)
+  const restaurantSlug = useCart((s) => s.restaurantSlug)
+  const deliveryFee = useCart((s) => s.deliveryFee)
   const updateQuantity = useCart((s) => s.updateQuantity)
   const removeItem = useCart((s) => s.removeItem)
   const clearCart = useCart((s) => s.clearCart)
   const getTotal = useCart((s) => s.getTotal)
-  const [orderPlaced, setOrderPlaced] = useState(false)
 
-  const restaurant = restaurants.find((r) => r.id === restaurantId)
+  const [isLoading, setIsLoading] = useState(false)
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [phone, setPhone] = useState("")
+  const [address, setAddress] = useState("")
+
   const subtotal = getTotal()
-  const deliveryFee = restaurant?.deliveryFee ?? 0
   const serviceFee = Math.round(subtotal * 0.05 * 100) / 100
   const total = subtotal + deliveryFee + serviceFee
 
-  const handlePlaceOrder = (e: React.FormEvent) => {
+  const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault()
-    setOrderPlaced(true)
-    clearCart()
-    toast.success("Order placed successfully!")
-  }
-
-  if (orderPlaced) {
-    return (
-      <>
-        <SiteHeader />
-        <main className="min-h-screen bg-background flex items-center justify-center">
-          <div className="text-center max-w-md mx-auto px-4 py-24">
-            <div className="flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mx-auto mb-6">
-              <CheckCircle className="w-10 h-10 text-primary" />
-            </div>
-            <h1 className="font-serif text-3xl font-bold text-foreground">Order Confirmed</h1>
-            <p className="text-muted-foreground mt-3 leading-relaxed">
-              Your order has been placed successfully. A local Davis driver will pick up your food and deliver it to your door.
-            </p>
-            <p className="text-sm text-muted-foreground mt-2">
-              Estimated delivery: 25-40 minutes
-            </p>
-            <div className="flex flex-col gap-3 mt-8">
-              <Link href="/restaurants">
-                <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
-                  Order Again
-                </Button>
-              </Link>
-              <Link href="/">
-                <Button variant="outline" className="w-full text-foreground border-border">
-                  Back to Home
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </main>
-        <SiteFooter />
-      </>
-    )
+    setIsLoading(true)
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          restaurantId,
+          restaurantSlug,
+          cart: items,
+          customerInfo: { name, email, phone, address },
+          fees: { subtotal, deliveryFee, serviceFee, total },
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data.error ?? "Checkout failed")
+      }
+      if (data.url) {
+        window.location.href = data.url
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Something went wrong")
+      setIsLoading(false)
+    }
   }
 
   if (items.length === 0) {
@@ -174,15 +164,49 @@ export default function CartPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-2">
                     <Label htmlFor="name" className="text-foreground">Full Name</Label>
-                    <Input id="name" placeholder="Your name" required className="bg-background text-foreground" />
+                    <Input
+                      id="name"
+                      placeholder="Your name"
+                      required
+                      className="bg-background text-foreground"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="email" className="text-foreground">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="you@example.com"
+                      required
+                      className="bg-background text-foreground"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
                   </div>
                   <div className="flex flex-col gap-2">
                     <Label htmlFor="phone" className="text-foreground">Phone Number</Label>
-                    <Input id="phone" type="tel" placeholder="(530) 555-0000" required className="bg-background text-foreground" />
+                    <Input
+                      id="phone"
+                      type="tel"
+                      placeholder="(530) 555-0000"
+                      required
+                      className="bg-background text-foreground"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                    />
                   </div>
                   <div className="md:col-span-2 flex flex-col gap-2">
                     <Label htmlFor="address" className="text-foreground">Delivery Address</Label>
-                    <Input id="address" placeholder="123 B St, Davis, CA" required className="bg-background text-foreground" />
+                    <Input
+                      id="address"
+                      placeholder="123 B St, Davis, CA"
+                      required
+                      className="bg-background text-foreground"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                    />
                   </div>
                   <div className="md:col-span-2 flex flex-col gap-2">
                     <Label htmlFor="notes" className="text-foreground">Delivery Notes (optional)</Label>
@@ -192,25 +216,23 @@ export default function CartPage() {
 
                 <Separator className="my-6 bg-border" />
 
-                <h2 className="font-serif text-xl font-semibold text-foreground mb-4">Payment</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="md:col-span-2 flex flex-col gap-2">
-                    <Label htmlFor="card" className="text-foreground">Card Number</Label>
-                    <Input id="card" placeholder="4242 4242 4242 4242" required className="bg-background text-foreground" />
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <Label htmlFor="expiry" className="text-foreground">Expiry</Label>
-                    <Input id="expiry" placeholder="MM/YY" required className="bg-background text-foreground" />
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <Label htmlFor="cvc" className="text-foreground">CVC</Label>
-                    <Input id="cvc" placeholder="123" required className="bg-background text-foreground" />
-                  </div>
-                </div>
-
-                <Button type="submit" size="lg" className="w-full mt-6 bg-primary text-primary-foreground hover:bg-primary/90 gap-2">
-                  <CreditCard className="w-4 h-4" />
-                  Place Order - ${total.toFixed(2)}
+                <Button
+                  type="submit"
+                  size="lg"
+                  disabled={isLoading}
+                  className="w-full bg-primary text-primary-foreground hover:bg-primary/90 gap-2"
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Redirecting to payment...
+                    </>
+                  ) : (
+                    <>
+                      <CreditCard className="w-4 h-4" />
+                      Place Order - ${total.toFixed(2)}
+                    </>
+                  )}
                 </Button>
               </form>
             </div>
