@@ -7,6 +7,7 @@ import { FeaturedRestaurantsSection } from "@/components/landing/featured-restau
 import { CtaSection } from "@/components/landing/cta-section"
 
 export default function HomePage() {
+  console.log("Stripe key value:", process.env.STRIPE_SECRET_KEY);
   return (
     <>
       <SiteHeader />
