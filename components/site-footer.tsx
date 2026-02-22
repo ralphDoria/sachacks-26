@@ -47,9 +47,11 @@ export function SiteFooter() {
           <p className="text-xs opacity-50">
             {'2026 Davis Downtown Business Association. All rights reserved.'}
           </p>
-          <p className="text-xs opacity-50">
-            Built with care for our community
-          </p>
+          <div className="flex items-center gap-4">
+            <Link href="/privacy" className="text-xs opacity-50 hover:opacity-100 transition-opacity">Privacy Policy</Link>
+            <Link href="/terms" className="text-xs opacity-50 hover:opacity-100 transition-opacity">Terms of Service</Link>
+            <p className="text-xs opacity-50">Built with care for our community</p>
+          </div>
         </div>
       </div>
     </footer>
