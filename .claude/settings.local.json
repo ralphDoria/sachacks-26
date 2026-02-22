@@ -1,7 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "WebFetch(domain:localwiki.org)",
+      "WebFetch(domain:places.singleplatform.com)",
+      "WebFetch(domain:www.ubereats.com)",
+      "WebFetch(domain:thefndc.com)",
+      "WebFetch(domain:foursquare.com)",
+      "WebFetch(domain:www.burgersnbrew.com)",
+      "WebFetch(domain:theaggie.org)"
     ]
   }
 }
