@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { MapPin } from "lucide-react"
+import Image from "next/image"
 
 export function SiteFooter() {
   return (
@@ -7,14 +7,9 @@ export function SiteFooter() {
       <div className="mx-auto max-w-7xl px-4 py-16 lg:px-8">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-4">
           <div className="md:col-span-1">
-            <Link href="/" className="flex items-center gap-2" aria-label="DDBA Local Delivery home">
-              <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary">
-                <MapPin className="w-5 h-5 text-primary-foreground" />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-serif text-lg font-bold leading-none tracking-tight">DDBA</span>
-                <span className="text-[10px] uppercase tracking-widest opacity-60 leading-none mt-0.5">Local Delivery</span>
-              </div>
+            <Link href="/" className="flex items-center gap-2" aria-label="DartDavis home">
+              <Image src="/DartDavis-logo.png" alt="DartDavis" width={160} height={64} className="h-16 w-auto object-contain" />
+              <span className="font-serif text-xl font-bold leading-none tracking-tight">DartDavis</span>
             </Link>
             <p className="mt-4 text-sm leading-relaxed opacity-70 max-w-xs">
               A community-first delivery platform by the Davis Downtown Business Association. Keeping dollars local since 1989.
@@ -39,7 +34,7 @@ export function SiteFooter() {
           </div>
 
           <div>
-            <h3 className="font-semibold text-sm uppercase tracking-wider mb-4 opacity-50">About DDBA</h3>
+            <h3 className="font-semibold text-sm uppercase tracking-wider mb-4 opacity-50">About DartDavis</h3>
             <ul className="flex flex-col gap-3">
               <li><span className="text-sm opacity-70">Davis Downtown Business Association</span></li>
               <li><span className="text-sm opacity-70">604 3rd St, Davis, CA 95616</span></li>

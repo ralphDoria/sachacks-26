@@ -15,25 +15,12 @@ const playfair = Playfair_Display({
 })
 
 export const metadata: Metadata = {
-  title: 'DDBA Local Delivery | Davis Downtown Business Association',
+  title: 'DartDavis',
   description: 'A community-first delivery platform for downtown Davis restaurants. Lower fees, local drivers, fresh food delivered fast.',
   generator: 'v0.app',
   icons: {
-    icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-    ],
-    apple: '/apple-icon.png',
+    icon: '/DartDavis-logo.png',
+    apple: '/DartDavis-logo.png',
   },
 }
 

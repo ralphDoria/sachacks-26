@@ -155,6 +155,15 @@ export default function DashboardPage() {
       prev.map((o) => (o.id === id ? { ...o, status: newStatus } : o))
     )
     await supabase.from("orders").update({ status: newStatus }).eq("id", id)
+
+    // Send customer email when restaurant confirms the order
+    if (newStatus === "confirmed") {
+      fetch("/api/notify-customer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId: id, event: "accepted" }),
+      }).catch(console.error)
+    }
   }
 
   const pendingOrders = orders.filter((o) => o.status === "pending")
@@ -169,16 +178,9 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-md border-b border-border">
+      <header className="bg-card border-b border-border">
         <div className="mx-auto max-w-7xl flex items-center justify-between px-4 py-3 lg:px-8">
           <div className="flex items-center gap-4">
-            <Link
-              href="/"
-              className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span className="hidden sm:inline">Back to Site</span>
-            </Link>
             <Separator orientation="vertical" className="h-6 bg-border" />
             <div className="flex items-center gap-2">
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary">

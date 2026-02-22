@@ -8,15 +8,8 @@ import {
   Shield,
   ArrowRight,
   Check,
-  Phone,
 } from "lucide-react"
-import { SiteHeader } from "@/components/site-header"
-import { SiteFooter } from "@/components/site-footer"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { toast } from "sonner"
 
 const benefits = [
   {
@@ -57,15 +50,9 @@ const included = [
 ]
 
 export default function ForRestaurantsPage() {
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    toast.success("Application submitted! We will be in touch within 48 hours.")
-  }
-
   return (
-    <>
-      <SiteHeader />
-      <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-background">
+        {/* Hero Section */}
         <div className="bg-foreground text-background py-20">
           <div className="mx-auto max-w-7xl px-4 lg:px-8">
             <span className="text-xs uppercase tracking-widest text-primary-foreground/50">For Restaurant Owners</span>
@@ -76,12 +63,12 @@ export default function ForRestaurantsPage() {
               Join the DDBA Local Delivery network and stop giving away 30% of every delivery order to national platforms.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mt-8">
-              <a href="#apply">
+              <Link href="/sign-up?from=restaurant">
                 <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 gap-2 w-full sm:w-auto">
                   Apply Now
                   <ArrowRight className="w-4 h-4" />
                 </Button>
-              </a>
+              </Link>
               <Link href="/dashboard">
                 <Button size="lg" variant="outline" className="border-background/20 text-background hover:bg-background/10 w-full sm:w-auto">
                   See Demo Dashboard
@@ -91,6 +78,7 @@ export default function ForRestaurantsPage() {
           </div>
         </div>
 
+        {/* Benefits Section */}
         <div className="mx-auto max-w-7xl px-4 lg:px-8 py-24">
           <div className="text-center mb-16">
             <span className="text-xs uppercase tracking-widest text-primary font-medium">Benefits</span>
@@ -114,6 +102,7 @@ export default function ForRestaurantsPage() {
           </div>
         </div>
 
+        {/* Numbers & Comparison Section */}
         <div className="bg-muted/50 py-24">
           <div className="mx-auto max-w-7xl px-4 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -169,63 +158,26 @@ export default function ForRestaurantsPage() {
           </div>
         </div>
 
-        <div className="py-24" id="apply">
-          <div className="mx-auto max-w-2xl px-4 lg:px-8">
-            <div className="text-center mb-12">
-              <span className="text-xs uppercase tracking-widest text-primary font-medium">Get Started</span>
-              <h2 className="font-serif text-4xl font-bold mt-3 text-foreground text-balance">
-                Apply to join the network
-              </h2>
-              <p className="text-muted-foreground mt-3 leading-relaxed">
-                Fill out the form below and a DDBA representative will reach out within 48 hours.
-              </p>
-            </div>
-
-            <form onSubmit={handleSubmit} className="bg-card rounded-xl border border-border p-8">
-              <div className="flex flex-col gap-5">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-2">
-                    <Label htmlFor="restaurant-name" className="text-foreground">Restaurant Name</Label>
-                    <Input id="restaurant-name" placeholder="Your restaurant" required className="bg-background text-foreground" />
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <Label htmlFor="contact-name" className="text-foreground">Contact Name</Label>
-                    <Input id="contact-name" placeholder="Your name" required className="bg-background text-foreground" />
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-2">
-                    <Label htmlFor="email" className="text-foreground">Email</Label>
-                    <Input id="email" type="email" placeholder="you@restaurant.com" required className="bg-background text-foreground" />
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <Label htmlFor="phone" className="text-foreground">Phone</Label>
-                    <Input id="phone" type="tel" placeholder="(530) 555-0000" required className="bg-background text-foreground" />
-                  </div>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <Label htmlFor="address" className="text-foreground">Restaurant Address</Label>
-                  <Input id="address" placeholder="Your downtown Davis address" required className="bg-background text-foreground" />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <Label htmlFor="message" className="text-foreground">Tell us about your restaurant</Label>
-                  <Textarea id="message" placeholder="Cuisine type, average monthly orders, current delivery setup..." rows={4} className="bg-background text-foreground" />
-                </div>
-                <Button type="submit" size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 gap-2">
-                  Submit Application
+        {/* CTA Section */}
+        <div className="py-24">
+          <div className="mx-auto max-w-2xl px-4 lg:px-8 text-center">
+            <span className="text-xs uppercase tracking-widest text-primary font-medium">Get Started</span>
+            <h2 className="font-serif text-4xl font-bold mt-3 text-foreground text-balance">
+              Ready to join the network?
+            </h2>
+            <p className="text-muted-foreground mt-3 leading-relaxed">
+              Create an account and a DDBA representative will reach out within 48 hours to get your restaurant listed.
+            </p>
+            <div className="mt-8">
+              <Link href="/sign-up?from=restaurant">
+                <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 gap-2">
+                  Apply Now
                   <ArrowRight className="w-4 h-4" />
                 </Button>
-              </div>
-            </form>
-
-            <div className="flex items-center justify-center gap-2 mt-8 text-sm text-muted-foreground">
-              <Phone className="w-4 h-4" />
-              <span>Questions? Call us at (530) 756-8763</span>
+              </Link>
             </div>
           </div>
         </div>
-      </main>
-      <SiteFooter />
-    </>
+    </main>
   )
 }

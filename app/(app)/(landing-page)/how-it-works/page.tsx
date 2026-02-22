@@ -1,7 +1,5 @@
 import Link from "next/link"
 import { Search, ShoppingBag, Bike, Utensils, ArrowRight, Heart, Shield, DollarSign } from "lucide-react"
-import { SiteHeader } from "@/components/site-header"
-import { SiteFooter } from "@/components/site-footer"
 import { Button } from "@/components/ui/button"
 
 const steps = [
@@ -55,9 +53,7 @@ const values = [
 
 export default function HowItWorksPage() {
   return (
-    <>
-      <SiteHeader />
-      <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-background">
         <div className="bg-foreground text-background py-20">
           <div className="mx-auto max-w-7xl px-4 lg:px-8">
             <span className="text-xs uppercase tracking-widest text-primary-foreground/50">How It Works</span>
@@ -129,8 +125,6 @@ export default function HowItWorksPage() {
             </Link>
           </div>
         </div>
-      </main>
-      <SiteFooter />
-    </>
+    </main>
   )
 }
