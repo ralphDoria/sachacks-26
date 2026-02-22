@@ -185,15 +185,6 @@ export default function CustomerDashboardPage() {
                 <p className="text-sm opacity-50 mt-1">{userEmail}</p>
               )}
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-background/70 hover:text-background hover:bg-background/10 gap-2"
-              onClick={handleSignOut}
-            >
-              <LogOut className="w-4 h-4" />
-              Sign Out
-            </Button>
           </div>
         </div>
 
