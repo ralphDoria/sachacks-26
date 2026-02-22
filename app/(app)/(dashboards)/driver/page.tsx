@@ -1,22 +1,14 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import Link from "next/link"
 import {
-  ArrowLeft,
   Bike,
   MapPin,
   DollarSign,
   Check,
-  User,
-  Phone,
   Package,
-  AlertCircle,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { supabase } from "@/lib/supabase"
@@ -39,7 +31,6 @@ interface Order {
 
 export default function RiderPage() {
   const [riderName, setRiderName] = useState("")
-  const [riderPhone, setRiderPhone] = useState("")
 
   const [availableOrders, setAvailableOrders] = useState<Order[]>([])
   const [activeOrder, setActiveOrder] = useState<Order | null>(null)
@@ -47,7 +38,15 @@ export default function RiderPage() {
   const [loading, setLoading] = useState(true)
   const [claiming, setClaiming] = useState<string | null>(null)
   const [delivering, setDelivering] = useState<string | null>(null)
-  const [formError, setFormError] = useState("")
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        const meta = user.user_metadata
+        setRiderName(meta?.full_name ?? user.email?.split("@")[0] ?? "")
+      }
+    })
+  }, [])
 
   const fetchAvailable = useCallback(async (silent = false) => {
     if (!silent) setLoading(true)
@@ -61,7 +60,6 @@ export default function RiderPage() {
     if (!silent) setLoading(false)
   }, [])
 
-  // Initial fetch + real-time subscription
   useEffect(() => {
     fetchAvailable()
 
@@ -85,24 +83,17 @@ export default function RiderPage() {
   }, [fetchAvailable])
 
   const claimDelivery = async (order: Order) => {
-    if (!riderName.trim() || !riderPhone.trim()) {
-      setFormError("Please enter your name and phone number before claiming a delivery.")
-      return
-    }
-    setFormError("")
     setClaiming(order.id)
 
     try {
-      // 1. Insert rider record
       const { data: rider, error: riderError } = await supabase
         .from("riders")
-        .insert({ name: riderName.trim(), phone: riderPhone.trim() })
+        .insert({ name: riderName, phone: "" })
         .select()
         .single()
 
       if (riderError || !rider) throw new Error("Failed to create rider")
 
-      // 2. Update order: assign rider and mark as claimed
       const { error: orderError } = await supabase
         .from("orders")
         .update({ rider_id: rider.id, status: "claimed" })
@@ -110,14 +101,12 @@ export default function RiderPage() {
 
       if (orderError) throw new Error("Failed to claim order")
 
-      // 3. Notify admin
       await fetch("/api/notify-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId: order.id, riderName: riderName.trim() }),
+        body: JSON.stringify({ orderId: order.id, riderName }),
       })
 
-      // 4. Update UI — move to active delivery, hide gig board
       setAvailableOrders((prev) => prev.filter((o) => o.id !== order.id))
       setActiveOrder({ ...order, status: "claimed" })
     } catch (err) {
@@ -135,7 +124,6 @@ export default function RiderPage() {
       .update({ status: "delivered" })
       .eq("id", order.id)
 
-    // Notify customer of delivery
     await fetch("/api/notify-customer", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -148,7 +136,6 @@ export default function RiderPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <header className="bg-card border-b border-border">
         <div className="mx-auto max-w-4xl flex items-center justify-between px-4 py-3 lg:px-8">
           <div className="flex items-center gap-4">
@@ -171,60 +158,7 @@ export default function RiderPage() {
       </header>
 
       <main className="mx-auto max-w-4xl px-4 lg:px-8 py-8 flex flex-col gap-8">
-        {/* Rider info form */}
-        <Card className="bg-card border-border">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-foreground font-serif text-lg">Your Info</CardTitle>
-            <p className="text-sm text-muted-foreground">
-              Fill in your details before claiming a delivery.
-            </p>
-          </CardHeader>
-          <CardContent>
-            {formError && (
-              <p className="text-sm text-destructive mb-4 p-3 rounded-md bg-destructive/5 border border-destructive/20 flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                {formError}
-              </p>
-            )}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="rider-name" className="text-foreground text-sm">
-                  Name
-                </Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-                  <Input
-                    id="rider-name"
-                    placeholder="Your full name"
-                    value={riderName}
-                    onChange={(e) => setRiderName(e.target.value)}
-                    className="pl-9 bg-background border-border"
-                    disabled={!!activeOrder}
-                  />
-                </div>
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="rider-phone" className="text-foreground text-sm">
-                  Phone
-                </Label>
-                <div className="relative">
-                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-                  <Input
-                    id="rider-phone"
-                    type="tel"
-                    placeholder="(555) 000-0000"
-                    value={riderPhone}
-                    onChange={(e) => setRiderPhone(e.target.value)}
-                    className="pl-9 bg-background border-border"
-                    disabled={!!activeOrder}
-                  />
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Active delivery — shown instead of gig board when driver has claimed one */}
+        {/* Active delivery */}
         {activeOrder && (
           <section>
             <h2 className="font-semibold text-foreground flex items-center gap-2 mb-4">
@@ -283,7 +217,7 @@ export default function RiderPage() {
           </section>
         )}
 
-        {/* Available deliveries — only shown when no active delivery */}
+        {/* Available deliveries */}
         {!activeOrder && (
           <section>
             <h2 className="font-semibold text-foreground flex items-center gap-2 mb-4">
