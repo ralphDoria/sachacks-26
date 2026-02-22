@@ -172,7 +172,6 @@ export default function CustomerDashboardPage() {
 
   return (
     <>
-      <SiteHeader />
       <main className="min-h-screen bg-background">
         {/* Hero bar */}
         <div className="bg-foreground text-background py-10">
@@ -338,7 +337,6 @@ export default function CustomerDashboardPage() {
           </Tabs>
         </div>
       </main>
-      <SiteFooter />
     </>
   )
 }
