@@ -202,6 +202,8 @@ export default function RestaurantPage({ params }: { params: Promise<{ slug: str
                     item={item}
                     restaurantId={restaurant.id}
                     restaurantName={restaurant.name}
+                    restaurantSlug={restaurant.slug}
+                    deliveryFee={restaurant.deliveryFee}
                   />
                 ))}
               </div>
