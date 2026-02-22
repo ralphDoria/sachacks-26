@@ -1,6 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
-import { Star, Clock } from "lucide-react"
+import { Clock } from "lucide-react"
 import type { Restaurant } from "@/lib/data"
 
 export function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
@@ -19,11 +19,6 @@ export function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
         />
         <div className="absolute top-3 left-3 bg-card/90 backdrop-blur-sm rounded-full px-3 py-1">
           <span className="text-xs font-medium text-primary">{restaurant.cuisine}</span>
-        </div>
-        <div className="absolute top-3 right-3 bg-card/90 backdrop-blur-sm rounded-full px-3 py-1 flex items-center gap-1">
-          <Star className="w-3.5 h-3.5 text-accent fill-accent" />
-          <span className="text-xs font-semibold text-foreground">{restaurant.rating}</span>
-          <span className="text-xs text-muted-foreground">({restaurant.reviewCount})</span>
         </div>
       </div>
       <div className="p-5">
