@@ -2,10 +2,16 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { Star, Clock, ArrowRight } from "lucide-react"
+import { Clock, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabase"
+
+const thumbnails: Record<string, string> = {
+  "sophias-thai-kitchen": "/davis-images-hardcoded/sophias-thai-kitchen-thumbnail.jpeg",
+  "taqueria-el-burrito": "/davis-images-hardcoded/taquieria-el-burrito-thumbnail.jpeg",
+  "burgers-and-brew": "/davis-images-hardcoded/burger-brew-thumbnail.jpg",
+}
 
 interface Restaurant {
   id: string
@@ -83,8 +89,18 @@ export function FeaturedRestaurantsSection() {
               href={`/restaurants/${restaurant.slug}`}
               className="group bg-card rounded-xl overflow-hidden border border-border hover:border-primary/30 transition-all hover:shadow-lg"
             >
-              <div className="relative aspect-[16/10] bg-muted flex items-center justify-center">
-                <div className="text-muted-foreground text-sm">Restaurant image</div>
+              <div className="relative aspect-[16/10] bg-muted overflow-hidden">
+                {thumbnails[restaurant.slug] ? (
+                  <Image
+                    src={thumbnails[restaurant.slug]}
+                    alt={restaurant.name}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm">No image</div>
+                )}
               </div>
               <div className="p-5">
                 <div className="flex items-start justify-between gap-2">
