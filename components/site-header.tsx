@@ -35,6 +35,9 @@ export function SiteHeader() {
           <Link href="/for-restaurants" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
             For Restaurants
           </Link>
+          <Link href="/for-drivers" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            For Drivers
+          </Link>
         </nav>
 
         <div className="flex items-center gap-3">
@@ -74,6 +77,9 @@ export function SiteHeader() {
                 </Link>
                 <Link href="/for-restaurants" onClick={() => setOpen(false)} className="text-lg font-medium text-foreground">
                   For Restaurants
+                </Link>
+                <Link href="/for-drivers" onClick={() => setOpen(false)} className="text-lg font-medium text-foreground">
+                  For Drivers
                 </Link>
                 <Link href="/dashboard" onClick={() => setOpen(false)} className="text-lg font-medium text-foreground">
                   Restaurant Login

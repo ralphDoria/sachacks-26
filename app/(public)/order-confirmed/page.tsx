@@ -3,9 +3,7 @@
 import { Suspense, useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import Link from "next/link"
-import { CheckCircle2, MapPin, ArrowLeft, Loader2, Package } from "lucide-react"
-import { SiteHeader } from "@/components/site-header"
-import { SiteFooter } from "@/components/site-footer"
+import { CheckCircle2, MapPin, ArrowLeft, Loader2, Package, Navigation } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { supabase } from "@/lib/supabase"
@@ -162,10 +160,16 @@ function OrderConfirmedContent() {
         </div>
       </div>
 
-      {/* Back to home */}
-      <div className="mt-8 flex justify-center">
+      {/* Actions */}
+      <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+        <Link href={`/order-tracking/${order.id}`}>
+          <Button className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90 w-full sm:w-auto">
+            <Navigation className="w-4 h-4" />
+            Track Your Order
+          </Button>
+        </Link>
         <Link href="/">
-          <Button variant="outline" className="gap-2">
+          <Button variant="outline" className="gap-2 w-full sm:w-auto">
             <ArrowLeft className="w-4 h-4" />
             Back to Home
           </Button>
@@ -177,20 +181,16 @@ function OrderConfirmedContent() {
 
 export default function OrderConfirmedPage() {
   return (
-    <>
-      <SiteHeader />
-      <main className="min-h-screen bg-background">
-        <Suspense
-          fallback={
-            <div className="flex items-center justify-center py-32">
-              <Loader2 className="w-10 h-10 text-primary animate-spin" />
-            </div>
-          }
-        >
-          <OrderConfirmedContent />
-        </Suspense>
-      </main>
-      <SiteFooter />
-    </>
+    <main className="bg-background">
+      <Suspense
+        fallback={
+          <div className="flex items-center justify-center py-32">
+            <Loader2 className="w-10 h-10 text-primary animate-spin" />
+          </div>
+        }
+      >
+        <OrderConfirmedContent />
+      </Suspense>
+    </main>
   )
 }

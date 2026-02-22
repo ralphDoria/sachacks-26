@@ -155,6 +155,15 @@ export default function DashboardPage() {
       prev.map((o) => (o.id === id ? { ...o, status: newStatus } : o))
     )
     await supabase.from("orders").update({ status: newStatus }).eq("id", id)
+
+    // Send customer email when restaurant confirms the order
+    if (newStatus === "confirmed") {
+      fetch("/api/notify-customer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId: id, event: "accepted" }),
+      }).catch(console.error)
+    }
   }
 
   const pendingOrders = orders.filter((o) => o.status === "pending")
