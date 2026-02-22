@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 import Stripe from 'stripe'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+console.log("Stripe key value:", process.env.STRIPE_SECRET_KEY);
 
 
 const supabaseAdmin = createClient(
