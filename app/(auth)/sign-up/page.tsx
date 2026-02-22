@@ -68,7 +68,7 @@ function SignUpForm() {
       toast.error(error.message)
     } else {
       toast.success("Check your email to confirm your account!")
-      router.push(from === "restaurant" ? "/dashboard" : from === "driver" ? "/rider" : "/")
+      router.push(from === "restaurant" ? "/dashboard" : from === "driver" ? "/driver" : "/")
     }
   }
 

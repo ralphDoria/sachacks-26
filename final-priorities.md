@@ -4,7 +4,7 @@
 
 - **Stack**: Next.js (App Router), Supabase (auth + DB), Stripe, Resend, Google Places API
 - **Auth**: Supabase email/password + Google OAuth, with separate `/login` and `/sign-up` pages
-- **Dashboards**: Restaurant owner dashboard exists at `/dashboard`; driver board exists at `/rider`; customer dashboard does not exist
+- **Dashboards**: Restaurant owner dashboard exists at `/dashboard`; driver board exists at `/driver`; customer dashboard does not exist
 - **Notifications**: Resend only emails admin on rider claim; no customer-facing emails
 - **Maps**: Google Places API used for ratings only; no routing/map UI
 - **Menu Management**: No UI — all menu data entered directly in Supabase
@@ -183,7 +183,7 @@ export async function POST(req: Request) {
 
 Wire this call in:
 - `app/dashboard/page.tsx` when "Confirm" button is clicked (accepted event)
-- `app/rider/page.tsx` when "Confirm Delivery" is clicked (delivered event)
+- `app/driver/page.tsx` when "Confirm Delivery" is clicked (delivered event)
 
 ---
 
@@ -330,7 +330,7 @@ Flow:
 
 ### Step 4.2 — Gig Board: One Delivery at a Time
 
-**File**: `app/rider/page.tsx`
+**File**: `app/driver/page.tsx`
 
 **Logic change**:
 - Check if the current driver has any order where `rider_id = [current rider] AND status IN ('claimed')`
@@ -382,7 +382,7 @@ Implementation:
 4. Render `DirectionsRenderer` on a `GoogleMap` component
 5. Display ETA from `DirectionsResult.routes[0].legs[0].duration.text`
 
-**UI layout** in `app/rider/page.tsx` when active delivery exists:
+**UI layout** in `app/driver/page.tsx` when active delivery exists:
 - Full-width map (400px height on mobile)
 - Overlay card showing:
   - Current step: "HEAD TO PICKUP" or "HEAD TO DROPOFF" (based on status)

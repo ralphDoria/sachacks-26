@@ -34,7 +34,7 @@ const roleConfig: Record<Role, {
     loginHeading: "Driver sign in",
     signupHeading: "Become a driver",
     signupSub: "Create a driver account to start earning with DDBA Local Delivery.",
-    destination: "/rider",
+    destination: "/driver",
     requiresName: true,
   },
   restaurant: {

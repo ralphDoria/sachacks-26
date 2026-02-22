@@ -22,7 +22,7 @@ function GoogleIcon() {
 }
 
 const postLoginRedirect: Record<string, string> = {
-  driver: "/rider",
+  driver: "/driver",
   restaurant: "/dashboard",
 }
 

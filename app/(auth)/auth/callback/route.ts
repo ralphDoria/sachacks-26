@@ -3,7 +3,7 @@ import { supabase } from "@/lib/supabase"
 
 const postAuthRedirect: Record<string, string> = {
   customer: "/customer-dashboard",
-  driver: "/rider",
+  driver: "/driver",
   restaurant: "/dashboard",
 }
 

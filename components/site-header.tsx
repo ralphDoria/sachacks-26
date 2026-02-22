@@ -13,7 +13,7 @@ import type { Session } from "@supabase/supabase-js"
 
 const dashboardLinks = [
   { href: "/customer-dashboard", label: "Customer" },
-  { href: "/rider", label: "Driver" },
+  { href: "/driver", label: "Driver" },
   { href: "/dashboard", label: "Restaurant" },
 ]
 

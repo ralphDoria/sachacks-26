@@ -31,9 +31,9 @@ export async function POST(req: NextRequest) {
     const restaurant = order.restaurants
 
     await resend.emails.send({
-      from: "Davis Direct <onboarding@resend.dev>",
+      from: "DartDavis <onboarding@resend.dev>",
       to: process.env.NOTIFICATION_EMAIL!,
-      subject: `Davis Direct: Rider picked up order #${orderId}`,
+      subject: `DartDavis: Rider picked up order #${orderId}`,
       text:
         `Hi! ${riderName} has picked up the order for ${order.customer_name} from ${restaurant.name}.\n` +
         `They are delivering to: ${order.customer_address}.\n` +

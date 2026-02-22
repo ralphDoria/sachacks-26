@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
 
     if (event === "accepted") {
       await resend.emails.send({
-        from: "Davis Direct <onboarding@resend.dev>",
+        from: "DartDavis <onboarding@resend.dev>",
         to: order.customer_email,
         subject: `Your order from ${restaurantName} is confirmed! 🎉`,
         html: `
@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
       })
     } else if (event === "delivered") {
       await resend.emails.send({
-        from: "Davis Direct <onboarding@resend.dev>",
+        from: "DartDavis <onboarding@resend.dev>",
         to: order.customer_email,
         subject: `Your order from ${restaurantName} has been delivered!`,
         html: `
