@@ -1,6 +1,6 @@
 "use client"
 
-import { use, useState } from "react"
+import { use, useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Star, Clock, MapPin, Phone, ArrowLeft, ShoppingBag } from "lucide-react"
@@ -9,22 +9,104 @@ import { SiteFooter } from "@/components/site-footer"
 import { MenuItemCard } from "@/components/menu-item-card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { getRestaurant, getCategories } from "@/lib/data"
+import { supabase } from "@/lib/supabase"
 import { useCart } from "@/lib/cart"
 import { notFound } from "next/navigation"
+import type { MenuItem, Restaurant } from "@/lib/data"
 
 export default function RestaurantPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params)
-  const restaurant = getRestaurant(slug)
+  const [restaurant, setRestaurant] = useState<Restaurant | null>(null)
+  const [loading, setLoading] = useState(true)
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
   const cartItemCount = useCart((s) => s.getItemCount())
   const cartTotal = useCart((s) => s.getTotal())
+
+  useEffect(() => {
+    async function loadRestaurantData() {
+      try {
+        // Fetch the restaurant by slug
+        const { data: restaurantData, error: restaurantError } = await supabase
+          .from("restaurants")
+          .select("*")
+          .eq("slug", slug)
+          .single()
+
+        if (restaurantError || !restaurantData) {
+          setLoading(false)
+          return
+        }
+
+        // Fetch menu items for this restaurant
+        const { data: menuData, error: menuError } = await supabase
+          .from("menu_items")
+          .select("*")
+          .eq("restaurant_id", restaurantData.id)
+          .eq("available", true)
+          .order("category", { ascending: true })
+          .order("name", { ascending: true })
+
+        if (menuError) {
+          setLoading(false)
+          return
+        }
+
+        // Map database fields to Restaurant/MenuItem interfaces
+        const mappedRestaurant: Restaurant = {
+          id: restaurantData.id,
+          name: restaurantData.name,
+          slug: restaurantData.slug,
+          description: restaurantData.description,
+          cuisine: restaurantData.cuisine,
+          image: restaurantData.image_url || "/images/placeholder.jpg",
+          rating: restaurantData.rating || 4.5,
+          reviewCount: restaurantData.review_count || 0,
+          deliveryFee: restaurantData.delivery_fee || 3.99,
+          deliveryTime: restaurantData.delivery_time || "25-35 min",
+          address: restaurantData.address,
+          phone: restaurantData.phone,
+          hours: restaurantData.hours || "Hours not available",
+          featured: restaurantData.featured || false,
+          menu: (menuData || []).map((item: any): MenuItem => ({
+            id: item.id,
+            name: item.name,
+            description: item.description,
+            price: item.price,
+            category: item.category,
+            image: item.image_url,
+            popular: item.popular || false,
+            dietary: item.dietary || [],
+          })),
+        }
+
+        setRestaurant(mappedRestaurant)
+        setLoading(false)
+      } catch (error) {
+        console.error("Error loading restaurant data:", error)
+        setLoading(false)
+      }
+    }
+
+    loadRestaurantData()
+  }, [slug])
+
+  if (loading) {
+    return (
+      <>
+        <SiteHeader />
+        <main className="min-h-screen bg-background flex items-center justify-center">
+          <p className="text-muted-foreground">Loading menu...</p>
+        </main>
+        <SiteFooter />
+      </>
+    )
+  }
 
   if (!restaurant) {
     notFound()
   }
 
-  const categories = getCategories(restaurant.menu)
+  const categories = [...new Set(restaurant.menu.map((item) => item.category))]
   const filteredMenu = activeCategory
     ? restaurant.menu.filter((item) => item.category === activeCategory)
     : restaurant.menu

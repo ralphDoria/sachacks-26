@@ -1,19 +1,66 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { Search } from "lucide-react"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { RestaurantCard } from "@/components/restaurant-card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { restaurants } from "@/lib/data"
-
-const cuisines = ["All", ...Array.from(new Set(restaurants.map((r) => r.cuisine)))]
+import { supabase } from "@/lib/supabase"
+import type { Restaurant } from "@/lib/data"
 
 export default function RestaurantsPage() {
+  const [restaurants, setRestaurants] = useState<Restaurant[]>([])
+  const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState("")
   const [activeCuisine, setActiveCuisine] = useState("All")
+
+  useEffect(() => {
+    async function fetchRestaurants() {
+      try {
+        const { data, error } = await supabase
+          .from('restaurants')
+          .select('*')
+          .order('name', { ascending: true })
+
+        if (error) {
+          console.error('Error fetching restaurants:', error)
+          setLoading(false)
+          return
+        }
+
+        // Map database fields to Restaurant type
+        const mapped = (data || []).map((r: any) => ({
+          id: r.id,
+          name: r.name,
+          slug: r.slug,
+          description: r.description || '',
+          cuisine: r.cuisine || 'Other',
+          image: r.image_url || '/images/placeholder.jpg',
+          rating: r.rating || 4.5,
+          reviewCount: r.review_count || 0,
+          deliveryFee: r.delivery_fee || 3.99,
+          deliveryTime: r.delivery_time || '25-35 min',
+          address: r.address || '',
+          phone: r.phone || '',
+          hours: r.hours || '',
+          featured: r.featured || false,
+          menu: []
+        }))
+
+        setRestaurants(mapped)
+      } catch (err) {
+        console.error('Error:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchRestaurants()
+  }, [])
+
+  const cuisines = ["All", ...Array.from(new Set(restaurants.map((r) => r.cuisine)))]
 
   const filtered = useMemo(() => {
     return restaurants.filter((r) => {
@@ -23,7 +70,21 @@ export default function RestaurantsPage() {
       const matchCuisine = activeCuisine === "All" || r.cuisine === activeCuisine
       return matchSearch && matchCuisine
     })
-  }, [search, activeCuisine])
+  }, [search, activeCuisine, restaurants])
+
+  if (loading) {
+    return (
+      <>
+        <SiteHeader />
+        <main className="min-h-screen bg-background flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-muted-foreground">Loading restaurants...</p>
+          </div>
+        </main>
+        <SiteFooter />
+      </>
+    )
+  }
 
   return (
     <>
