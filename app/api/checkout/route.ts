@@ -96,6 +96,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ url: session.url })
   } catch (error) {
+    console.log("Stripe key value:", process.env.STRIPE_SECRET_KEY);
     console.error('Checkout error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
