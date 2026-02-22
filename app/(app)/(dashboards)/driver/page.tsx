@@ -149,7 +149,7 @@ export default function RiderPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-md border-b border-border">
+      <header className="bg-card border-b border-border">
         <div className="mx-auto max-w-4xl flex items-center justify-between px-4 py-3 lg:px-8">
           <div className="flex items-center gap-4">
             <Separator orientation="vertical" className="h-6 bg-border" />
