@@ -3,7 +3,7 @@
 import { use, useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { Star, Clock, MapPin, Phone, ArrowLeft, ShoppingBag } from "lucide-react"
+import { Clock, MapPin, Phone, ArrowLeft, ShoppingBag } from "lucide-react"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { MenuItemCard } from "@/components/menu-item-card"
@@ -13,6 +13,7 @@ import { supabase } from "@/lib/supabase"
 import { useCart } from "@/lib/cart"
 import { notFound } from "next/navigation"
 import type { MenuItem, Restaurant } from "@/lib/data"
+import { GoogleRating } from "@/components/google-rating"
 
 export default function RestaurantPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params)
@@ -145,11 +146,7 @@ export default function RestaurantPage({ params }: { params: Promise<{ slug: str
               <div className="bg-card rounded-xl border border-border p-6 mb-6">
                 <p className="text-muted-foreground leading-relaxed">{restaurant.description}</p>
                 <div className="flex flex-wrap items-center gap-6 mt-4 pt-4 border-t border-border">
-                  <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 text-accent fill-accent" />
-                    <span className="font-semibold text-foreground">{restaurant.rating}</span>
-                    <span className="text-sm text-muted-foreground">({restaurant.reviewCount} reviews)</span>
-                  </div>
+                  <GoogleRating name={restaurant.name} address={restaurant.address} />
                   <div className="flex items-center gap-1 text-sm text-muted-foreground">
                     <Clock className="w-4 h-4" />
                     {restaurant.deliveryTime}
