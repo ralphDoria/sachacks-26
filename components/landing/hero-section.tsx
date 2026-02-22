@@ -36,7 +36,7 @@ export function HeroSection() {
                 </Button>
               </Link>
               <Link href="/for-restaurants">
-                <Button size="lg" variant="outline" className="border-background/20 text-background hover:bg-background/10 w-full sm:w-auto">
+                <Button size="lg" variant="outline" className="bg-transparent border-background/40 text-background hover:bg-background/10 w-full sm:w-auto">
                   For Restaurant Owners
                 </Button>
               </Link>
@@ -61,16 +61,19 @@ export function HeroSection() {
           </div>
 
           <div className="relative hidden lg:block">
-            <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden">
+            <div className="relative w-full aspect-[4/5] overflow-hidden">
               <Image
-                src="/images/hero-food.jpg"
-                alt="A beautiful spread of food from downtown Davis restaurants"
+                src="/davis-images-hardcoded/main-landing-davis-pillar.avif"
+                alt="Downtown Davis"
                 fill
                 className="object-cover"
                 priority
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-foreground/40 via-transparent to-transparent" />
+              {/* Left fade */}
+              <div className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-foreground to-transparent" />
+              {/* Right fade */}
+              <div className="absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-foreground to-transparent" />
             </div>
           </div>
         </div>

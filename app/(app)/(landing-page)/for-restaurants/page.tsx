@@ -70,7 +70,7 @@ export default function ForRestaurantsPage() {
                 </Button>
               </Link>
               <Link href="/dashboard">
-                <Button size="lg" variant="outline" className="border-background/20 text-background hover:bg-background/10 w-full sm:w-auto">
+                <Button size="lg" variant="outline" className="bg-transparent border-background/40 text-background hover:bg-background/10 w-full sm:w-auto">
                   See Demo Dashboard
                 </Button>
               </Link>
