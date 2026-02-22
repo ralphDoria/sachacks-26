@@ -152,20 +152,13 @@ export default function RiderPage() {
       <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-md border-b border-border">
         <div className="mx-auto max-w-4xl flex items-center justify-between px-4 py-3 lg:px-8">
           <div className="flex items-center gap-4">
-            <Link
-              href="/"
-              className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span className="hidden sm:inline">Back to Site</span>
-            </Link>
             <Separator orientation="vertical" className="h-6 bg-border" />
             <div className="flex items-center gap-2">
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary">
                 <Bike className="w-4 h-4 text-primary-foreground" />
               </div>
               <div>
-                <h1 className="text-sm font-semibold text-foreground leading-none">Rider Board</h1>
+                <h1 className="text-sm font-semibold text-foreground leading-none">Driver Board</h1>
                 <p className="text-[10px] text-muted-foreground">Available deliveries</p>
               </div>
             </div>
